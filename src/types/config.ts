@@ -1,5 +1,5 @@
 export interface Configuration {
-    provider: "aws" | "gcloud" | "azure";
+    provider: "local" | "aws" | "gcloud" | "azure";
     credentials?: {
         accessKeyId: string;
         secretAccessKey: string;
@@ -10,4 +10,11 @@ export interface Configuration {
     projectId?: string;
     keyFilePath?: string;
     connectionString?: string;
+}
+
+export interface FileMetadata {
+    key: string | undefined;
+    size: number | undefined;
+    lastModified: Date | undefined;
+    url: string
 }
