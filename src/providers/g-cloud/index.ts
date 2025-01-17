@@ -1,13 +1,14 @@
 import { Bucket, File, Storage } from "@google-cloud/storage"
 import { Readable } from "stream"
 import { CloudStorage } from "../../types/cloud"
-import { Configuration, FileMetadata } from "../../types/config"
+import { GCSConfig } from "../../types/config"
+import { FileMetadata } from "../../types/metadata"
 
 export class GCSService extends CloudStorage {
     private readonly client: Storage
     private readonly bucket: Bucket
 
-    constructor(config: Configuration) {
+    constructor(config: GCSConfig) {
         super()
 
         if (config.bucket == null)
@@ -23,12 +24,6 @@ export class GCSService extends CloudStorage {
         this.bucket = this.client.bucket(config.bucket)
     }
 
-    /**
-     * Upload a file to GCS
-     * @param key - The file key (path/filename)
-     * @param file - The file buffer or stream
-     * @param contentType - The file's content type
-     */
     async uploadFile(
         key: string,
         file: Buffer | Readable,
@@ -55,11 +50,6 @@ export class GCSService extends CloudStorage {
         }
     }
 
-    /**
-     * Download a file from GCS
-     * @param key - The file key (path/filename)
-     * @returns The file data
-     */
     async downloadFile(key: string): Promise<Buffer> {
         try {
             const fileHandle: File = this.bucket.file(key)
@@ -70,10 +60,6 @@ export class GCSService extends CloudStorage {
         }
     }
 
-    /**
-     * Delete a file from GCS
-     * @param key - The file key (path/filename)
-     */
     async deleteFile(key: string): Promise<void> {
         try {
             const fileHandle = this.bucket.file(key)
@@ -83,11 +69,6 @@ export class GCSService extends CloudStorage {
         }
     }
 
-    /**
-     * Get a file object from GCS
-     * @param key - The file key (path/filename)
-     * @returns File metadata and data
-     */
     async getFile(key: string): Promise<FileMetadata> {
         try {
             const fileHandle: File = this.bucket.file(key)
@@ -105,12 +86,6 @@ export class GCSService extends CloudStorage {
         }
     }
 
-    /**
-     * Get a list of files from GCS
-     * @param prefix - Optional prefix to filter files
-     * @param maxKeys - Maximum number of keys to return
-     * @returns Array of file information
-     */
     async getFilesList(maxKeys: number = 1000, prefix?: string): Promise<FileMetadata[]> {
         try {
             const [files] = await this.bucket.getFiles({
@@ -133,12 +108,6 @@ export class GCSService extends CloudStorage {
         }
     }
 
-    /**
-     * Get a pre-signed URL for a file
-     * @param key - The file key (path/filename)
-     * @param expiresIn - URL expiration time in seconds (default: 3600)
-     * @returns Pre-signed URL
-     */
     async getSignedUrl(key: string, expiresIn: number = 3600) {
         try {
             const fileHandle = this.bucket.file(key)

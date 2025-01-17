@@ -2,13 +2,14 @@ import { DeleteObjectCommand, GetObjectCommand, GetObjectCommandOutput, ListObje
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import { Readable } from "stream"
 import { CloudStorage } from "../../types/cloud"
-import { Configuration, FileMetadata } from "../../types/config"
+import { AwsConfig } from "../../types/config"
+import { FileMetadata } from "../../types/metadata"
 
 export class S3Service extends CloudStorage {
     private readonly client: S3Client
     private readonly bucket: string
 
-    constructor(config: Configuration) {
+    constructor(config: AwsConfig) {
         super()
 
         if (config.bucket == null)
@@ -31,12 +32,6 @@ export class S3Service extends CloudStorage {
         })
     }
 
-    /**
-     * Upload a file to S3
-     * @param key - The file key (path/filename)
-     * @param file - The file buffer or stream
-     * @param contentType - The file's content type
-     */
     async uploadFile(
         key: string,
         file: Buffer | Readable,
@@ -56,11 +51,6 @@ export class S3Service extends CloudStorage {
         }
     }
 
-    /**
-     * Download a file from S3
-     * @param key - The file key (path/filename)
-     * @returns The file data
-     */
     async downloadFile(key: string): Promise<GetObjectCommandOutput> {
         try {
             return await this.client.send(
@@ -74,10 +64,6 @@ export class S3Service extends CloudStorage {
         }
     }
 
-    /**
-     * Delete a file from S3
-     * @param key - The file key (path/filename)
-     */
     async deleteFile(key: string) {
         try {
             await this.client.send(
@@ -91,11 +77,6 @@ export class S3Service extends CloudStorage {
         }
     }
 
-    /**
-     * Get a file object from S3
-     * @param key - The file key (path/filename)
-     * @returns File metadata and data
-     */
     async getFile(key: string): Promise<FileMetadata> {
         try {
             const data = await this.downloadFile(key)
@@ -112,12 +93,6 @@ export class S3Service extends CloudStorage {
         }
     }
 
-    /**
-     * Get a list of files from S3
-     * @param prefix - Optional prefix to filter files
-     * @param maxKeys - Maximum number of keys to return
-     * @returns Array of file information
-     */
     async getFilesList(maxKeys: number = 1000, prefix?: string) {
         try {
             const response = await this.client.send(
@@ -143,12 +118,6 @@ export class S3Service extends CloudStorage {
         }
     }
 
-    /**
-     * Get a pre-signed URL for a file
-     * @param key - The file key (path/filename)
-     * @param expiresIn - URL expiration time in seconds (default: 3600)
-     * @returns Pre-signed URL
-     */
     async getSignedUrl(key: string, expiresIn: number = 3600) {
         try {
             const command = new GetObjectCommand({

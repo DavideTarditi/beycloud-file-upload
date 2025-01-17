@@ -1,12 +1,13 @@
 import { BlobDownloadResponseModel, BlobServiceClient, BlockBlobClient, ContainerClient } from "@azure/storage-blob"
 import { CloudStorage } from "../../types/cloud"
-import { Configuration, FileMetadata } from "../../types/config"
+import { AzureConfig } from "../../types/config"
+import { FileMetadata } from "../../types/metadata"
 
 export class AzureBlobService extends CloudStorage {
     private readonly client: BlobServiceClient
     private readonly bucket: ContainerClient
 
-    constructor(config: Configuration) {
+    constructor(config: AzureConfig) {
         super()
 
         if (config.connectionString == null)
@@ -19,12 +20,6 @@ export class AzureBlobService extends CloudStorage {
         this.bucket = this.client.getContainerClient(config.container)
     }
 
-    /**
-     * Upload a file to Azure Blob Storage
-     * @param key - The file key (path/filename)
-     * @param file - The file buffer or stream
-     * @param contentType - The file's content type
-     */
     async uploadFile(
         key: string,
         file: Buffer,
@@ -42,11 +37,6 @@ export class AzureBlobService extends CloudStorage {
         }
     }
 
-    /**
-     * Download a file from Azure Blob Storage
-     * @param key - The file key (path/filename)
-     * @returns The file data
-     */
     async downloadFile(key: string): Promise<BlobDownloadResponseModel> {
         try {
             const blockBlobClient = this.bucket.getBlockBlobClient(key)
@@ -56,10 +46,6 @@ export class AzureBlobService extends CloudStorage {
         }
     }
 
-    /**
-     * Delete a file from Azure Blob Storage
-     * @param key - The file key (path/filename)
-     */
     async deleteFile(key: string) {
         try {
             const blockBlobClient = this.bucket.getBlockBlobClient(key)
@@ -69,11 +55,6 @@ export class AzureBlobService extends CloudStorage {
         }
     }
 
-    /**
-     * Get a file object from Azure Blob Storage
-     * @param key - The file key (path/filename)
-     * @returns File metadata and data
-     */
     async getFile(key: string): Promise<FileMetadata> {
         try {
             const blockBlobClient = this.bucket.getBlockBlobClient(key)
@@ -91,12 +72,6 @@ export class AzureBlobService extends CloudStorage {
         }
     }
 
-    /**
-     * Get a list of files from Azure Blob Storage
-     * @param prefix - Optional prefix to filter files
-     * @param maxKeys - Maximum number of keys to return
-     * @returns Array of file information
-     */
     async getFilesList(maxKeys: number = 1000, prefix?: string) {
         try {
             const results: FileMetadata[] = []
@@ -124,12 +99,6 @@ export class AzureBlobService extends CloudStorage {
         }
     }
 
-    /**
-     * Get a signed URL for a file (SAS URL in Azure terms)
-     * @param key - The file key (path/filename)
-     * @param expiresIn - URL expiration time in seconds (default: 3600)
-     * @returns SAS URL
-     */
     async getSignedUrl(key: string, expiresIn: number = 3600) {
         try {
             const blockBlobClient: BlockBlobClient = this.bucket.getBlockBlobClient(key)

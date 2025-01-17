@@ -1,5 +1,5 @@
 {
-    "name": "@beycloud",
+    "name": "beycloud",
     "version": "1.0.0",
     "author": "Davide Tarditi",
     "description": "A unified library to manage file uploads across different cloud providers in Express",
