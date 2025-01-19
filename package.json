@@ -1,45 +1,49 @@
 {
-  "name": "beycloud",
-  "version": "1.0.0",
-  "description": "A unified library to manage file uploads across different cloud providers in Express",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "test": "jest",
-    "lint": "eslint src --ext .ts",
-    "prepare": "npm run build"
-  },
-  "keywords": [
-    "express",
-    "cloud-storage",
-    "aws",
-    "gcloud",
-    "azure",
-    "s3",
-    "upload"
-  ],
-  "author": "Davide Tarditi",
-  "license": "MIT",
-  "dependencies": {
-    "aws-sdk": "^2.1200.0",
-    "@google-cloud/storage": "^6.0.0",
-    "@azure/storage-blob": "^12.12.0",
-    "multer": "^1.4.5-lts.1"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.13",
-    "@types/multer": "^1.4.7",
-    "@types/node": "^18.7.13",
-    "@types/jest": "^28.1.8",
-    "typescript": "^4.8.2",
-    "jest": "^28.1.3",
-    "ts-jest": "^28.0.8",
-    "eslint": "^8.22.0",
-    "@typescript-eslint/parser": "^5.35.1",
-    "@typescript-eslint/eslint-plugin": "^5.35.1"
-  },
-  "peerDependencies": {
-    "express": "^4.0.0"
-  }
+    "name": "beycloud",
+    "version": "1.0.0",
+    "author": "Davide Tarditi",
+    "description": "A unified library to manage file uploads across different cloud providers in Express",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "jest",
+        "lint": "eslint src --ext .ts",
+        "prepare": "npm run build"
+    },
+    "keywords": [
+        "express",
+        "cloud-storage",
+        "aws",
+        "gcloud",
+        "azure",
+        "s3",
+        "upload"
+    ],
+    "license": "MIT",
+    "dependencies": {
+        "@aws-sdk/client-s3": "^3.726.1",
+        "@aws-sdk/s3-request-presigner": "^3.726.1",
+        "@azure/storage-blob": "^12.26.0",
+        "@google-cloud/storage": "^6.0.0",
+        "aws-sdk": "^2.1200.0",
+        "multer": "^1.4.5-lts.1"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.13",
+        "@types/jest": "^28.1.8",
+        "@types/multer": "^1.4.7",
+        "@types/node": "^18.7.13",
+        "@typescript-eslint/eslint-plugin": "^5.35.1",
+        "@typescript-eslint/parser": "^5.35.1",
+        "dotenv": "^16.4.7",
+        "eslint": "^8.22.0",
+        "jest": "^28.1.3",
+        "ts-jest": "^28.0.8",
+        "ts-node": "^10.9.2",
+        "typescript": "^4.9.5"
+    },
+    "peerDependencies": {
+        "express": "^4.21.2"
+    }
 }
