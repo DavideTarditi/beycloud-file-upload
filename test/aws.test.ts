@@ -57,11 +57,11 @@ describe("AWS", () => {
         test("Upload photo correctly", async () => {
             const fileContent = fs.readFileSync(path.join(__dirname, "obj/skyline.jpg"))
 
-            const url = await client.uploadFile("skyline", fileContent)
+            const url: string = await client.uploadFile("skyline", fileContent)
 
-            const expectedUrlRegex = /https:\/\/poveroh\.s3\.eu-north-1\.amazonaws\.com\/skyline/
+            const expectedUrl = process.env.EXPECTED_URL as string
 
-            expect(url).toMatch(expectedUrlRegex)
+            expect(url.startsWith(expectedUrl)).toBe(true)
         })
     })
 
@@ -101,11 +101,11 @@ describe("AWS", () => {
 
     describe("Signed URL", () => {
         test("Get url", async () => {
-            const expectedUrlRegex = /https:\/\/poveroh\.s3\.eu-north-1\.amazonaws\.com\/skyline/
+            const expectedUrl = process.env.EXPECTED_URL as string
 
             const url = await client.getSignedUrl("skyline", 2500)
 
-            expect(url).toMatch(expectedUrlRegex)
+            expect(url.startsWith(expectedUrl)).toBe(true)
         })
     })
 
