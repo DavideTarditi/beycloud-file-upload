@@ -13,15 +13,23 @@ export abstract class CloudStorage {
     protected constructor() {}
 
     /**
+     * Checks if a file exists in the S3 bucket.
+     * @param key - The key (path) of the file to check
+     * @returns Promise<boolean> - True if file exists, false otherwise
+     * @throws Error if the operation fails for reasons other than file not found
+     */
+    abstract exists(key: string): Promise<boolean>;
+
+    /**
      * Uploads a file to cloud storage
      * @abstract
      * @param {string} key - Unique identifier/path for the file in storage
      * @param {Buffer | Readable} file - File content as Buffer or Readable stream
      * @param {string} [contentType] - MIME type of the file (e.g., "image/jpeg", "application/pdf")
-     * @returns {void}
+     * @returns AWS Signed URL to read the file
      * @throws {Error} If upload fails or storage is unavailable
      */
-    abstract uploadFile(key: string, file: Buffer | Readable, contentType?: string): void;
+    abstract uploadFile(key: string, file: Buffer | Readable, contentType?: string): Promise<string> | string;
 
     /**
      * Downloads a file from cloud storage
@@ -43,7 +51,7 @@ export abstract class CloudStorage {
      * @returns {void}
      * @throws {Error} If file not found or deletion fails
      */
-    abstract deleteFile(key: string): void;
+    abstract deleteFile(key: string): Promise<boolean>;
 
     /**
      * Retrieves metadata for a specific file
@@ -57,12 +65,12 @@ export abstract class CloudStorage {
     /**
      * Lists files in the storage with optional prefix filtering
      * @abstract
-     * @param {number} maxKeys - Maximum number of files to list
+     * @param {number} maxKeys - Optional maximum number of files to list. Default is 1000.
      * @param {string} [prefix] - Optional prefix to filter files (e.g., "folder/")
      * @returns {Promise<FileMetadata[]>} Array of file metadata objects
      * @throws {Error} If listing operation fails
      */
-    abstract getFilesList(maxKeys: number, prefix?: string): Promise<FileMetadata[]>;
+    abstract getFilesList(maxKeys?: number, prefix?: string): Promise<FileMetadata[]>;
 
     /**
      * Generates a signed URL for temporary file access

@@ -23,6 +23,12 @@ export interface FileMetadata {
     lastModified: Date | undefined;
 
     /**
+     * Content type of the file
+     * @property {string} type
+     */
+    type: string | null | undefined;
+
+    /**
      * URL to access the file
      * @property {string} url
      * Can be a presigned URL for cloud storage or a local file path

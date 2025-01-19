@@ -20,11 +20,20 @@ export class AzureBlobService extends CloudStorage {
         this.bucket = this.client.getContainerClient(config.container)
     }
 
+    async exists(key: string): Promise<boolean> {
+        try {
+            const blockBlobClient = this.bucket.getBlockBlobClient(key)
+            return await blockBlobClient.exists()
+        } catch (error: any) {
+            throw new Error(`Failed to check if file exists: ${error.message}`)
+        }
+    }
+
     async uploadFile(
         key: string,
         file: Buffer,
         contentType?: string
-    ) {
+    ): Promise<string> {
         try {
             const blockBlobClient = this.bucket.getBlockBlobClient(key)
             await blockBlobClient.upload(file, file.length, {
@@ -32,6 +41,8 @@ export class AzureBlobService extends CloudStorage {
                     blobContentType: contentType
                 }
             })
+
+            return this.getSignedUrl(key)
         } catch (error: any) {
             throw new Error(`Failed to upload file: ${error.message}`)
         }
@@ -46,10 +57,12 @@ export class AzureBlobService extends CloudStorage {
         }
     }
 
-    async deleteFile(key: string) {
+    async deleteFile(key: string): Promise<boolean> {
         try {
             const blockBlobClient = this.bucket.getBlockBlobClient(key)
             await blockBlobClient.delete()
+
+            return true
         } catch (error: any) {
             throw new Error(`Failed to delete file: ${error.message}`)
         }
@@ -65,7 +78,8 @@ export class AzureBlobService extends CloudStorage {
                 key: key,
                 lastModified: properties.lastModified,
                 size: properties.contentLength,
-                url: "" //TODO: signed url
+                type: properties.contentType,
+                url: await this.getSignedUrl(key)
             }
         } catch (error: any) {
             throw new Error(`Failed to get file: ${error.message}`)
@@ -85,7 +99,8 @@ export class AzureBlobService extends CloudStorage {
                     key: blob.name,
                     size: blob.properties.contentLength || 0,
                     lastModified: blob.properties.lastModified,
-                    url: ""
+                    type: blob.properties.contentType,
+                    url: await this.getSignedUrl(blob.name)
                 })
 
                 if (results.length >= maxKeys) {

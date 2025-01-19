@@ -46,17 +46,17 @@ export class BeyCloud extends CloudStorage {
         switch (this.provider) {
             case "aws":
                 if (!isAwsConfig(this.config))
-                    throw new Error("AWS credentials are required")
+                    throw new Error("AWS credentials are required. Configuration is incorrect or must be provided")
                 return new S3Service(this.config)
 
             case "gcloud":
                 if (!isGCSConfig(this.config))
-                    throw new Error("Google Cloud credentials are required")
+                    throw new Error("Google Cloud credentials are required. Configuration is incorrect or must be provided")
                 return new GCSService(this.config)
 
             case "azure":
                 if (!isAzureConfig(this.config))
-                    throw new Error("Azure credentials are required")
+                    throw new Error("Azure credentials credentials are required. Configuration is incorrect or must be provided")
                 return new AzureBlobService(this.config)
 
             default:
@@ -65,12 +65,22 @@ export class BeyCloud extends CloudStorage {
     }
 
     /**
+     * Checks if a file exists.
+     * @param key - The key (path) of the file to check
+     * @returns Promise<boolean> - True if file exists, false otherwise
+     * @throws Error if the operation fails for reasons other than file not found
+     */
+    exists(key: string): Promise<boolean> {
+        return this.client.exists(key)
+    }
+
+    /**
      * Uploads a file to the cloud storage
      * @param key - The unique identifier/path for the file
      * @param file - The file content as Buffer or Readable stream
      * @param contentType - Optional MIME type of the file
      */
-    uploadFile(key: string, file: Buffer | Readable, contentType?: string) {
+    uploadFile(key: string, file: Buffer | Readable, contentType?: string): Promise<string> | string {
         return this.client.uploadFile(key, file, contentType)
     }
 
@@ -87,7 +97,7 @@ export class BeyCloud extends CloudStorage {
      * Deletes a file from the cloud storage
      * @param key - The unique identifier/path of the file to delete
      */
-    deleteFile(key: string): void {
+    deleteFile(key: string): Promise<boolean> {
         return this.client.deleteFile(key)
     }
 

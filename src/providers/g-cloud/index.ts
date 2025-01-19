@@ -24,11 +24,21 @@ export class GCSService extends CloudStorage {
         this.bucket = this.client.bucket(config.bucket)
     }
 
+    async exists(key: string): Promise<boolean> {
+        try {
+            const file = this.bucket.file(key)
+            const [exists] = await file.exists()
+            return exists
+        } catch (error: any) {
+            throw new Error(`Failed to check if file exists: ${error.message}`)
+        }
+    }
+
     async uploadFile(
         key: string,
         file: Buffer | Readable,
         contentType?: string
-    ): Promise<void> {
+    ): Promise<string> {
         try {
             const fileHandle = this.bucket.file(key)
             const options: { contentType?: string } = {}
@@ -45,6 +55,8 @@ export class GCSService extends CloudStorage {
                 stream.on("finish", resolve)
                 stream.on("error", reject)
             })
+
+            return this.getSignedUrl(key)
         } catch (error: any) {
             throw new Error(`Failed to upload file: ${error.message}`)
         }
@@ -60,10 +72,12 @@ export class GCSService extends CloudStorage {
         }
     }
 
-    async deleteFile(key: string): Promise<void> {
+    async deleteFile(key: string): Promise<boolean> {
         try {
             const fileHandle = this.bucket.file(key)
             await fileHandle.delete()
+
+            return true
         } catch (error: any) {
             throw new Error(`Failed to delete file: ${error.message}`)
         }
@@ -79,7 +93,8 @@ export class GCSService extends CloudStorage {
                 key: key,
                 size: Number(metadata.size),
                 lastModified: new Date(metadata.updated),
-                url: "" //TODO: signedUrl
+                type: metadata.type,
+                url: await this.getSignedUrl(key)
             }
         } catch (error: any) {
             throw new Error(`Failed to get file: ${error.message}`)
