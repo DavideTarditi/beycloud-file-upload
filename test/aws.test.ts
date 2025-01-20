@@ -59,7 +59,7 @@ describe("AWS", () => {
 
             const url: string = await client.uploadFile("skyline", fileContent)
 
-            const expectedUrl = process.env.EXPECTED_URL as string
+            const expectedUrl = process.env.AWS_EXPECTED_URL as string
 
             expect(url.startsWith(expectedUrl)).toBe(true)
         })
@@ -101,7 +101,7 @@ describe("AWS", () => {
 
     describe("Signed URL", () => {
         test("Get url", async () => {
-            const expectedUrl = process.env.EXPECTED_URL as string
+            const expectedUrl = process.env.AWS_EXPECTED_URL as string
 
             const url = await client.getSignedUrl("skyline", 2500)
 
