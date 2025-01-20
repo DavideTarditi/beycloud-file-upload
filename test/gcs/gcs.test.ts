@@ -1,8 +1,10 @@
-import { AwsConfig, BeyCloud, CloudStorage, FileMetadata, GCSConfig } from "../src"
+import { AwsConfig, BeyCloud, CloudStorage, FileMetadata, GCSConfig } from "../../src"
 import fs from "fs"
 import path = require("node:path")
 
 describe("GCS", () => {
+    const rootTestFolder = path.resolve(__dirname, "..")
+
     let client: CloudStorage
     let config: GCSConfig
 
@@ -10,7 +12,7 @@ describe("GCS", () => {
         config = {
             bucket: process.env.GCS_BUCKET as string,
             projectId: process.env.GCS_PROJECTID as string,
-            keyFilePath: path.join(__dirname, "account.json")
+            keyFilePath: path.join(rootTestFolder, "key/account.json")
         }
 
         try {
@@ -25,7 +27,7 @@ describe("GCS", () => {
             const incorrectConfig: GCSConfig = {
                 bucket: "",
                 projectId: process.env.GCS_PROJECTID as string,
-                keyFilePath: path.join(__dirname, "account.json")
+                keyFilePath: path.join(rootTestFolder, "key/account.json")
             }
 
             expect(() => {
@@ -52,7 +54,7 @@ describe("GCS", () => {
 
     describe("Upload", () => {
         test("Upload photo correctly", async () => {
-            const fileContent = fs.readFileSync(path.join(__dirname, "obj/skyline.jpg"))
+            const fileContent = fs.readFileSync(path.join(rootTestFolder, "sample/skyline.jpg"))
 
             const url: string = await client.uploadFile("skyline", fileContent)
 
@@ -88,7 +90,7 @@ describe("GCS", () => {
         })
 
         test("Get single file - uncorrected key", async () => {
-            await expect(client.getFile("oobj/skyline.png")).rejects.toThrowError(/^Failed to get file: No such object/)
+            await expect(client.getFile("inexistent_folder/skyline.png")).rejects.toThrowError(/^Failed to get file: No such object/)
         })
     })
 
