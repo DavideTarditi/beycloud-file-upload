@@ -1,6 +1,6 @@
 # Beycloud
 
-A uniform library to handle file uploads to different cloud providers in Express.
+A library to handle file uploads to different cloud providers
 
 ## Installation
 

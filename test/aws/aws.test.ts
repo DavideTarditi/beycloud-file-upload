@@ -1,8 +1,10 @@
-import { AwsConfig, BeyCloud, CloudStorage, GCSConfig } from "../src"
+import { AwsConfig, BeyCloud, CloudStorage, GCSConfig } from "../../src"
 import fs from "fs"
 import path = require("node:path")
 
 describe("AWS", () => {
+    const rootTestFolder = path.resolve(__dirname, '..');
+
     let client: CloudStorage
     let config: AwsConfig
 
@@ -44,7 +46,7 @@ describe("AWS", () => {
             const incorrectConfig: GCSConfig = {
                 bucket: process.env.GCS_BUCKET as string,
                 projectId: process.env.GCS_PROJECTID as string,
-                keyFilePath: path.join(__dirname, "account.json")
+                keyFilePath: path.join(rootTestFolder, "key/account.json")
             }
 
             expect(() => {
@@ -55,11 +57,11 @@ describe("AWS", () => {
 
     describe("Upload", () => {
         test("Upload photo correctly", async () => {
-            const fileContent = fs.readFileSync(path.join(__dirname, "obj/skyline.jpg"))
+            const fileContent = fs.readFileSync(path.join(rootTestFolder, "sample/skyline.jpg"))
 
             const url: string = await client.uploadFile("skyline", fileContent)
 
-            const expectedUrl = process.env.EXPECTED_URL as string
+            const expectedUrl = process.env.AWS_EXPECTED_URL as string
 
             expect(url.startsWith(expectedUrl)).toBe(true)
         })
@@ -93,7 +95,7 @@ describe("AWS", () => {
         })
 
         test("Get single file - uncorrected key", async () => {
-            await expect(client.getFile("oobj/skyline.png")).rejects.toThrowError(
+            await expect(client.getFile("inexistent_folder/skyline.png")).rejects.toThrowError(
                 "Failed to download file: The specified key does not exist."
             )
         })
@@ -101,7 +103,7 @@ describe("AWS", () => {
 
     describe("Signed URL", () => {
         test("Get url", async () => {
-            const expectedUrl = process.env.EXPECTED_URL as string
+            const expectedUrl = process.env.AWS_EXPECTED_URL as string
 
             const url = await client.getSignedUrl("skyline", 2500)
 

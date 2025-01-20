@@ -11,16 +11,16 @@ export class GCSService extends CloudStorage {
     constructor(config: GCSConfig) {
         super()
 
-        if (config.bucket == null)
+        if (config.bucket == null || config.bucket.trim().length == 0)
             throw new Error("Bucket must be provided")
 
-        if (config.projectId == null)
+        if (config.projectId == null || config.projectId.trim().length == 0)
             throw new Error("Project must be provided")
 
-        if (config.keyFilePath == null)
+        if (config.keyFilePath == null || config.keyFilePath.trim().length == 0)
             throw new Error("Key File Path must be provided")
 
-        this.client = new Storage({ projectId: config.projectId, keyFile: config.keyFilePath })
+        this.client = new Storage({ projectId: config.projectId, keyFilename: config.keyFilePath })
         this.bucket = this.client.bucket(config.bucket)
     }
 
@@ -44,14 +44,13 @@ export class GCSService extends CloudStorage {
             const options: { contentType?: string } = {}
             if (contentType) options.contentType = contentType
 
-            const stream = fileHandle.createWriteStream(options)
-            if (file instanceof Buffer) {
-                stream.end(file)
-            } else {
-                file.pipe(stream)
-            }
-
             await new Promise((resolve, reject) => {
+                const stream = fileHandle.createWriteStream(options)
+                if (file instanceof Buffer) {
+                    stream.end(file)
+                } else {
+                    file.pipe(stream)
+                }
                 stream.on("finish", resolve)
                 stream.on("error", reject)
             })
@@ -74,6 +73,9 @@ export class GCSService extends CloudStorage {
 
     async deleteFile(key: string): Promise<boolean> {
         try {
+            if (!await this.exists(key))
+                throw new Error("The specified key does not exist.")
+
             const fileHandle = this.bucket.file(key)
             await fileHandle.delete()
 
@@ -87,13 +89,12 @@ export class GCSService extends CloudStorage {
         try {
             const fileHandle: File = this.bucket.file(key)
             const [metadata] = await fileHandle.getMetadata()
-            const data: Buffer = await this.downloadFile(key)
 
             return {
                 key: key,
                 size: Number(metadata.size),
                 lastModified: new Date(metadata.updated),
-                type: metadata.type,
+                type: metadata.kind,
                 url: await this.getSignedUrl(key)
             }
         } catch (error: any) {
@@ -108,16 +109,15 @@ export class GCSService extends CloudStorage {
                 maxResults: maxKeys
             })
 
-            return []
-
-            // TODO: map file metadata
-
-            // return files.map<FileMetadata>(async (file) => ({
-            //     key: file.name,
-            //     size: Number(file.metadata.size),
-            //     lastModified: new Date(file.metadata.updated),
-            //     url: await this.getSignedUrl(file.name)
-            // }))
+            return await Promise.all(
+                files.map(async (item) => ({
+                    key: item.name,
+                    size: item.metadata.size,
+                    lastModified: item.metadata.updated,
+                    type: item.metadata.kind,
+                    url: await this.getSignedUrl(item.name)
+                }))
+            )
         } catch (error: any) {
             throw new Error(`Failed to list files: ${error.message}`)
         }
@@ -125,6 +125,9 @@ export class GCSService extends CloudStorage {
 
     async getSignedUrl(key: string, expiresIn: number = 3600) {
         try {
+            if (!await this.exists(key))
+                throw new Error("The specified key does not exist.")
+
             const fileHandle = this.bucket.file(key)
 
             const [url] = await fileHandle.getSignedUrl({
@@ -132,7 +135,7 @@ export class GCSService extends CloudStorage {
                 expires: Date.now() + expiresIn * 1000
             })
 
-            return url[0]
+            return url
         } catch (error: any) {
             throw new Error(`Failed to generate signed URL: ${error.message}`)
         }
