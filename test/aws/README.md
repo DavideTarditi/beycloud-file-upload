@@ -84,7 +84,7 @@ Tests error handling for deleting non-existent files:
 
 To run these tests successfully, the following environment variables must be configured:
 
-Amazon Web Services:
+**Amazon Web Services:**
 ```env
 AWS_BUCKET=your-bucket-name
 AWS_REGION=your-region
@@ -93,12 +93,14 @@ AWS_CREDENTIALS_SECRETACCESSKEY=your-secret-access-key
 AWS_EXPECTED_URL=your-expected-url
 ```
 
-Google Cloud:
+**Google Cloud:**
 ```env
 GCS_BUCKET=your-bucket-name
 GCS_PROJECTID=your-projectid
 GCS_EXPECTED_URL=your-expected-url
 ```
+
+For Google Cloud, remember to add `service-account` json file and call it `account.json`
 
 ## Additional Notes
 
