@@ -20,6 +20,15 @@ This document provides an overview of the test suites in the `test` folder. It e
     GCS_EXPECTED_URL=your-expected-url
     ```
 
+   ```env
+   DIGITALOCEAN_BUCKET=your-bucket-name
+   DIGITALOCEAN_REGION=your-region
+   DIGITALOCEAN_ENDPOINT=your-endpoint
+   DIGITALOCEAN_CREDENTIALS_ACCESSKEYID=your-access-key-id
+   DIGITALOCEAN_CREDENTIALS_SECRETACCESSKEY=your-secret-access-key
+   DIGITALOCEAN_EXPECTED_URL=your-expected-url
+   ```
+
 2. **Dependencies**: Install the necessary dependencies by running:
 
     ```sh

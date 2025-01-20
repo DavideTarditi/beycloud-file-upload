@@ -1,19 +1,19 @@
-# AWS Test Documentation
+# DigitalOcean Test Documentation
 
-This document provides a detailed explanation of each test case in the AWS cloud storage testing suite. The tests cover configuration, file operations (upload, download, list, delete), and URL signing functionality.
+This document provides a detailed explanation of each test case in the DigitalOcean cloud storage testing suite. The tests cover configuration, file operations (upload, download, list, delete), and URL signing functionality.
 
 ## Configuration Tests
 
 ### 1. Missed Configuration Part
-Tests the validation of incomplete AWS configuration:
+Tests the validation of incomplete DigitalOcean configuration:
 - Attempts to create a client with an empty bucket name
 - Expects to throw error "Bucket must be provided"
 - Verifies that the system properly validates required configuration parameters
 
 ### 2. Incorrect Configuration
 Tests the validation of wrong configuration type:
-- Attempts to initialize AWS client with Google Cloud Storage (GCS) configuration
-- Expects to throw error about incorrect AWS credentials
+- Attempts to initialize DigitalOcean client with Google Cloud Storage (GCS) configuration
+- Expects to throw error about incorrect DigitalOcean credentials
 - Ensures the system can detect and reject incompatible configuration types
 
 ## Upload Tests
@@ -22,7 +22,7 @@ Tests the validation of wrong configuration type:
 Tests the successful upload of an image file:
 - Reads a local file named `skyline.jpg` from the `sample` directory
 - Uploads the file with the key `skyline`
-- Verifies that the returned URL starts with the expected AWS URL pattern
+- Verifies that the returned URL starts with the expected DigitalOcean URL pattern
 - Confirms basic upload functionality is working as expected
 
 ## Download Tests
@@ -63,7 +63,7 @@ Tests error handling for invalid file requests:
 ### 1. Get URL
 Tests generation of signed URLs:
 - Generates a signed URL for file `skyline` with 2500ms expiration
-- Verifies the URL starts with expected AWS URL pattern
+- Verifies the URL starts with expected DigitalOcean URL pattern
 - Confirms signed URL generation works correctly
 
 ## Delete Tests
@@ -84,13 +84,14 @@ Tests error handling for deleting non-existent files:
 
 To run these tests successfully, the following environment variables must be configured:
 
-**Amazon Web Services:**
+**Digital Ocean:**
 ```env
-AWS_BUCKET=your-bucket-name
-AWS_REGION=your-region
-AWS_CREDENTIALS_ACCESSKEYID=your-access-key-id
-AWS_CREDENTIALS_SECRETACCESSKEY=your-secret-access-key
-AWS_EXPECTED_URL=your-expected-url
+DIGITALOCEAN_BUCKET=your-bucket-name
+DIGITALOCEAN_REGION=your-region
+DIGITALOCEAN_ENDPOINT=your-endpoint
+DIGITALOCEAN_CREDENTIALS_ACCESSKEYID=your-access-key-id
+DIGITALOCEAN_CREDENTIALS_SECRETACCESSKEY=your-secret-access-key
+DIGITALOCEAN_EXPECTED_URL=your-expected-url
 ```
 
 **Google Cloud:**
