@@ -1,15 +1,20 @@
 {
-    "name": "beycloud",
-    "version": "1.0.0",
+    "name": "beycloud-js",
+    "version": "1.0.1",
     "author": "Davide Tarditi",
-    "description": "A unified library to manage file uploads across different cloud providers in Express",
+    "description": "A library to handle file uploads to different cloud providers",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc",
         "test": "jest",
         "lint": "eslint src --ext .ts",
-        "prepare": "npm run build"
+        "prepare": "npm run build",
+        "prepublishOnly": "npm run build"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DavideTarditi/beycloud-js.git"
     },
     "keywords": [
         "express",
@@ -19,6 +24,9 @@
         "azure",
         "s3",
         "upload"
+    ],
+    "files": [
+        "dist"
     ],
     "license": "MIT",
     "dependencies": {
