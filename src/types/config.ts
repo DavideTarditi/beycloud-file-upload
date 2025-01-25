@@ -65,3 +65,13 @@ export interface GCSConfig {
     projectId: string;
     keyFilePath: string;
 }
+
+
+/**
+ * Local Storage configuration
+ * @interface GCSConfig
+ * @property {string} bucket - The name of the GCS bucket
+ */
+export interface LocalConfig {
+    basePath: string;
+}

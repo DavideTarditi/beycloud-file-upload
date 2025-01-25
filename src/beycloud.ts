@@ -7,9 +7,10 @@ import { BlobDownloadResponseModel } from "@azure/storage-blob"
 import { GetObjectCommandOutput } from "@aws-sdk/client-s3"
 
 import { Readable } from "stream"
-import { AwsConfig, AzureConfig, ClientProvider, DigitalOceanConfig, GCSConfig } from "./types/config"
-import { isAwsConfig, isAzureConfig, isDigitalOceanConfig, isGCSConfig } from "./utils/typeChecker"
+import { AwsConfig, AzureConfig, ClientProvider, DigitalOceanConfig, GCSConfig, LocalConfig } from "./types/config"
+import { isAwsConfig, isAzureConfig, isDigitalOceanConfig, isGCSConfig, isLocalConfig } from "./utils/typeChecker"
 import { FileMetadata } from "./types/metadata"
+import { LocalService } from "./providers/local"
 
 /**
  * BeyCloud is an open-source unified cloud storage wrapper that provides a consistent interface
@@ -21,7 +22,7 @@ import { FileMetadata } from "./types/metadata"
  */
 export class BeyCloud extends CloudStorage {
   private readonly provider: ClientProvider = "local"
-  private readonly config: AwsConfig | AzureConfig | GCSConfig | DigitalOceanConfig
+  private readonly config: AwsConfig | AzureConfig | GCSConfig | DigitalOceanConfig | LocalConfig
   private readonly client: CloudStorage
 
   /**
@@ -29,7 +30,7 @@ export class BeyCloud extends CloudStorage {
    * @param provider - The cloud provider to use ("aws", "azure", "gcloud")
    * @param config - Provider-specific configuration object
    */
-  constructor(provider: ClientProvider, config: AwsConfig | AzureConfig | GCSConfig | DigitalOceanConfig) {
+  constructor(provider: ClientProvider, config: AwsConfig | AzureConfig | GCSConfig | DigitalOceanConfig | LocalConfig) {
     super()
     this.provider = provider
     this.config = config
@@ -63,6 +64,11 @@ export class BeyCloud extends CloudStorage {
         if (!isDigitalOceanConfig(this.config))
           throw new Error("Digital Ocean credentials are required. Configuration is incorrect or must be provided")
         return new S3Service(this.config)
+
+      case "local":
+        if (!isLocalConfig(this.config))
+          throw new Error("Local credentials are required. Configuration is incorrect or must be provided")
+        return new LocalService(this.config)
 
       default:
         throw new Error("Unsupported provider")
