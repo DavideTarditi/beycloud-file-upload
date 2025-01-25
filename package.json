@@ -1,6 +1,6 @@
 {
     "name": "beycloud-js",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "Davide Tarditi",
     "description": "A library to handle file uploads to different cloud providers",
     "main": "dist/index.js",
