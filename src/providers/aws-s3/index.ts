@@ -2,15 +2,16 @@ import { _Object, DeleteObjectCommand, GetObjectCommand, GetObjectCommandOutput,
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import { Readable } from "stream"
 import { CloudStorage } from "../../types/cloud"
-import { AwsConfig } from "../../types/config"
+import { AwsConfig, DigitalOceanConfig } from "../../types/config"
 import { FileMetadata } from "../../types/metadata"
 import { extractExtension, isFolder } from "../../utils/extension"
+import { ContentType } from "../../types/contentType"
 
 export class S3Service extends CloudStorage {
     private readonly client: S3Client
     private readonly bucket: string
 
-    constructor(config: AwsConfig) {
+    constructor(config: AwsConfig | DigitalOceanConfig) {
         super()
 
         if (config.bucket == null || config.bucket.trim().length == 0)
@@ -23,14 +24,7 @@ export class S3Service extends CloudStorage {
             throw new Error("Credentials must be provided")
 
         this.bucket = config.bucket
-        this.client = new S3Client({
-            region: config.region,
-            credentials:
-                {
-                    accessKeyId: config.credentials.accessKeyId,
-                    secretAccessKey: config.credentials.secretAccessKey
-                }
-        })
+        this.client = new S3Client(config)
     }
 
     async exists(key: string): Promise<boolean> {
@@ -53,7 +47,7 @@ export class S3Service extends CloudStorage {
     async uploadFile(
         key: string,
         file: Buffer | Readable,
-        contentType?: string
+        contentType?: ContentType | string
     ): Promise<string> {
         try {
             await this.client.send(
@@ -73,6 +67,9 @@ export class S3Service extends CloudStorage {
 
     async downloadFile(key: string): Promise<GetObjectCommandOutput> {
         try {
+            if (!await this.exists(key))
+                throw new Error("The specified key does not exist.")
+
             return await this.client.send(
                 new GetObjectCommand({
                     Bucket: this.bucket,
