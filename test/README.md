@@ -13,7 +13,7 @@ This document provides an overview of the test suites in the `test` folder. It e
     AWS_CREDENTIALS_SECRETACCESSKEY=your-secret-access-key
     AWS_EXPECTED_URL=your-expected-url
     ```
-   
+
     ```env
     GCS_BUCKET=your-gcs-bucket-name
     GCS_PROJECTID=your-projectid
@@ -28,6 +28,17 @@ This document provides an overview of the test suites in the `test` folder. It e
    DIGITALOCEAN_CREDENTIALS_SECRETACCESSKEY=your-secret-access-key
    DIGITALOCEAN_EXPECTED_URL=your-expected-url
    ```
+
+    ```env
+    AZURE_CONNECTION_STRING=your-connection-string
+    AZURE_CONTAINER=your-container
+    AZURE_EXPECTED_URL=your-expected-url
+    ```
+
+    ```env
+    LOCAL_BASE_PATH=your-storage-path
+    LOCAL_EXPECTED_URL= #es. test/skyline.jpg
+    ```
 
 2. **Dependencies**: Install the necessary dependencies by running:
 
