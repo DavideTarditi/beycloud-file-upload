@@ -2,6 +2,7 @@ import { Readable } from "stream"
 import { BlobDownloadResponseModel } from "@azure/storage-blob"
 import { GetObjectCommandOutput } from "@aws-sdk/client-s3"
 import { FileMetadata } from "./metadata"
+import { ContentType } from "./contentType"
 
 /**
  * Abstract base class for cloud storage operations
@@ -29,7 +30,7 @@ export abstract class CloudStorage {
      * @returns AWS Signed URL to read the file
      * @throws {Error} If upload fails or storage is unavailable
      */
-    abstract uploadFile(key: string, file: Buffer | Readable, contentType?: string): Promise<string> | string;
+    abstract uploadFile(key: string, file: Buffer | Readable, contentType?: ContentType | string): Promise<string> | string;
 
     /**
      * Downloads a file from cloud storage

@@ -3,6 +3,7 @@ import { Readable } from "stream"
 import { CloudStorage } from "../../types/cloud"
 import { GCSConfig } from "../../types/config"
 import { FileMetadata } from "../../types/metadata"
+import { ContentType } from "../../types/contentType"
 
 export class GCSService extends CloudStorage {
     private readonly client: Storage
@@ -37,7 +38,7 @@ export class GCSService extends CloudStorage {
     async uploadFile(
         key: string,
         file: Buffer | Readable,
-        contentType?: string
+        contentType?: ContentType | string
     ): Promise<string> {
         try {
             const fileHandle = this.bucket.file(key)

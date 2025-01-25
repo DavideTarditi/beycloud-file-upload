@@ -2,6 +2,7 @@ import { BlobDownloadResponseModel, BlobSASPermissions, BlobServiceClient, Block
 import { CloudStorage } from "../../types/cloud"
 import { AzureConfig } from "../../types/config"
 import { FileMetadata } from "../../types/metadata"
+import { ContentType } from "../../types/contentType"
 
 export class AzureBlobService extends CloudStorage {
     private readonly client: BlobServiceClient
@@ -32,7 +33,7 @@ export class AzureBlobService extends CloudStorage {
     async uploadFile(
         key: string,
         file: Buffer,
-        contentType?: string
+        contentType?: ContentType | string
     ): Promise<string> {
         try {
             const blockBlobClient = this.bucket.getBlockBlobClient(key)
@@ -128,24 +129,24 @@ export class AzureBlobService extends CloudStorage {
             if (!await this.exists(key))
                 throw new Error("The specified key does not exist.")
 
-            const blockBlobClient: BlockBlobClient = this.bucket.getBlockBlobClient(key);
+            const blockBlobClient: BlockBlobClient = this.bucket.getBlockBlobClient(key)
 
-            const startsOn = new Date();
-            const expiresOn = new Date(startsOn);
-            expiresOn.setSeconds(startsOn.getSeconds() + expiresIn);
+            const startsOn = new Date()
+            const expiresOn = new Date(startsOn)
+            expiresOn.setSeconds(startsOn.getSeconds() + expiresIn)
 
             // Specify the permissions
-            const permissions = BlobSASPermissions.parse("r"); // "r" for read access
-            const protocol = SASProtocol.HttpsAndHttp; // Optional: Restrict to HTTPS if needed
+            const permissions = BlobSASPermissions.parse("r") // "r" for read access
+            const protocol = SASProtocol.HttpsAndHttp // Optional: Restrict to HTTPS if needed
 
             return await blockBlobClient.generateSasUrl({
                 permissions,
                 startsOn,
                 expiresOn,
-                protocol, // Optional
-            });
+                protocol // Optional
+            })
         } catch (error: any) {
-            throw new Error(`Failed to generate signed URL: ${error.message}`);
+            throw new Error(`Failed to generate signed URL: ${error.message}`)
         }
     }
 }
