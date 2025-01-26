@@ -6,14 +6,14 @@ A library to handle file uploads to different cloud providers
 
 Install via NPM:
 ```bash
-npm install beycloud-js
+npm install beycloud
 ```
 
 ## Usage
 
 ```typescript
 import express from "express"
-import { AwsConfig, BeyCloud } from "beycloud-js"
+import { AwsConfig, BeyCloud } from "beycloud"
 
 const app = express()
 
