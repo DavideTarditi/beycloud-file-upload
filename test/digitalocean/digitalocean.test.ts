@@ -1,6 +1,6 @@
 import { BeyCloud, CloudStorage, DigitalOceanConfig, GCSConfig } from '../../src'
 import fs from 'fs'
-import path = require('node:path')
+import * as path from 'node:path'
 
 describe('DigitalOcean', () => {
     const rootTestFolder = path.resolve(__dirname, '..')

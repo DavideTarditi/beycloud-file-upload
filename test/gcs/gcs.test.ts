@@ -1,6 +1,6 @@
 import { AwsConfig, BeyCloud, CloudStorage, FileMetadata, GCSConfig } from '../../src'
 import fs from 'fs'
-import path = require('node:path')
+import * as path from 'node:path'
 
 describe('GCS', () => {
     const rootTestFolder = path.resolve(__dirname, '..')

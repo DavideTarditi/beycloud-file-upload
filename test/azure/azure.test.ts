@@ -1,6 +1,6 @@
 import { AzureConfig, BeyCloud, CloudStorage, GCSConfig } from '../../src'
 import * as fs from 'fs'
-import path = require('node:path')
+import * as path from 'node:path'
 
 describe('Azure', () => {
     const rootTestFolder = path.resolve(__dirname, '..')
