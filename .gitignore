@@ -132,3 +132,4 @@ dist
 .pnp.*
 
 .idea
+.DS_Store

@@ -1,11 +1,11 @@
-import { CloudStorage } from "../../types/cloud"
-import { FileMetadata } from "../../types/metadata"
-import { extractExtension, isFolder } from "../../utils/extension"
-import { mkdir, readFile, stat, unlink, writeFile } from "fs/promises"
-import { Readable } from "stream"
-import path from "path"
-import { LocalConfig } from "../../types/config"
-import { ContentType, setDefaultExtensions } from "../../types/contentType"
+import { CloudStorage } from '../../types/cloud'
+import { FileMetadata } from '../../types/metadata'
+import { extractExtension, isFolder } from '../../utils/extension'
+import { mkdir, readFile, stat, unlink, writeFile } from 'fs/promises'
+import { Readable } from 'stream'
+import path from 'path'
+import { LocalConfig } from '../../types/config'
+import { ContentType, setDefaultExtensions } from '../../types/contentType'
 
 export class LocalService extends CloudStorage {
     private readonly basePath: string
@@ -14,7 +14,7 @@ export class LocalService extends CloudStorage {
         super()
 
         if (config.basePath == null || config.basePath.trim().length === 0) {
-            throw new Error("Base path must be provided")
+            throw new Error('Base path must be provided')
         }
 
         this.basePath = config.basePath
@@ -33,11 +33,7 @@ export class LocalService extends CloudStorage {
         }
     }
 
-    async uploadFile(
-        key: string,
-        file: Buffer | Readable,
-        contentType?: ContentType | string
-    ): Promise<string> {
+    async uploadFile(key: string, file: Buffer | Readable, contentType?: ContentType | string): Promise<string> {
         try {
             key = setDefaultExtensions(key, contentType)
 
@@ -70,8 +66,8 @@ export class LocalService extends CloudStorage {
 
     async downloadFile(key: string): Promise<Buffer> {
         try {
-            if (!await this.exists(key)) {
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) {
+                throw new Error('The specified key does not exist.')
             }
 
             const fullPath = this.getFullPath(key)
@@ -84,8 +80,8 @@ export class LocalService extends CloudStorage {
 
     async deleteFile(key: string): Promise<boolean> {
         try {
-            if (!await this.exists(key)) {
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) {
+                throw new Error('The specified key does not exist.')
             }
 
             const fullPath = this.getFullPath(key)
@@ -105,8 +101,8 @@ export class LocalService extends CloudStorage {
 
     async getFile(key: string): Promise<FileMetadata> {
         try {
-            if (!await this.exists(key)) {
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) {
+                throw new Error('The specified key does not exist.')
             }
 
             const fullPath = this.getFullPath(key)
@@ -114,7 +110,7 @@ export class LocalService extends CloudStorage {
 
             let contentType: string | undefined
             try {
-                const metaContent = await readFile(`${fullPath}.meta`, "utf-8")
+                const metaContent = await readFile(`${fullPath}.meta`, 'utf-8')
                 contentType = JSON.parse(metaContent).contentType
             } catch {
                 // Ignore if metadata file doesn't exist
@@ -124,7 +120,7 @@ export class LocalService extends CloudStorage {
                 key: key,
                 lastModified: fileStat.mtime,
                 size: fileStat.size,
-                type: contentType || isFolder(key) ? "folder" : extractExtension(key),
+                type: contentType || isFolder(key) ? 'folder' : extractExtension(key),
                 url: `file://${fullPath}`
             }
         } catch (error: any) {
@@ -134,12 +130,12 @@ export class LocalService extends CloudStorage {
 
     async getFilesList(maxKeys?: number, prefix?: string): Promise<FileMetadata[]> {
         try {
-            const { readdir } = require("fs/promises")
-            const fullPath = this.getFullPath(prefix || "")
+            const { readdir } = require('fs/promises')
+            const fullPath = this.getFullPath(prefix || '')
 
             let files = await readdir(fullPath, { withFileTypes: true })
 
-            files = files.filter((file: any) => !file.name.endsWith('.meta'));
+            files = files.filter((file: any) => !file.name.endsWith('.meta'))
 
             if (maxKeys) {
                 files = files.slice(0, maxKeys)
@@ -157,8 +153,8 @@ export class LocalService extends CloudStorage {
     }
 
     async getSignedUrl(key: string): Promise<string> {
-        if (!await this.exists(key)) {
-            throw new Error("The specified key does not exist.")
+        if (!(await this.exists(key))) {
+            throw new Error('The specified key does not exist.')
         }
 
         // For local storage, we just return the file URL

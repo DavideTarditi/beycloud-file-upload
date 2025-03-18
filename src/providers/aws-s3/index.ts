@@ -1,11 +1,20 @@
-import { _Object, DeleteObjectCommand, GetObjectCommand, GetObjectCommandOutput, HeadObjectCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import { Readable } from "stream"
-import { CloudStorage } from "../../types/cloud"
-import { AwsConfig, DigitalOceanConfig } from "../../types/config"
-import { FileMetadata } from "../../types/metadata"
-import { extractExtension, isFolder } from "../../utils/extension"
-import { ContentType } from "../../types/contentType"
+import {
+    _Object,
+    DeleteObjectCommand,
+    GetObjectCommand,
+    GetObjectCommandOutput,
+    HeadObjectCommand,
+    ListObjectsV2Command,
+    PutObjectCommand,
+    S3Client
+} from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { Readable } from 'stream'
+import { CloudStorage } from '../../types/cloud'
+import { AwsConfig, DigitalOceanConfig } from '../../types/config'
+import { FileMetadata } from '../../types/metadata'
+import { extractExtension, isFolder } from '../../utils/extension'
+import { ContentType } from '../../types/contentType'
 
 export class S3Service extends CloudStorage {
     private readonly client: S3Client
@@ -14,14 +23,11 @@ export class S3Service extends CloudStorage {
     constructor(config: AwsConfig | DigitalOceanConfig) {
         super()
 
-        if (config.bucket == null || config.bucket.trim().length == 0)
-            throw new Error("Bucket must be provided")
+        if (config.bucket == null || config.bucket.trim().length == 0) throw new Error('Bucket must be provided')
 
-        if (config.region == null || config.region.trim().length == 0)
-            throw new Error("Region must be provided")
+        if (config.region == null || config.region.trim().length == 0) throw new Error('Region must be provided')
 
-        if (config.credentials == null)
-            throw new Error("Credentials must be provided")
+        if (config.credentials == null) throw new Error('Credentials must be provided')
 
         this.bucket = config.bucket
         this.client = new S3Client(config)
@@ -37,18 +43,14 @@ export class S3Service extends CloudStorage {
             )
             return true
         } catch (error: any) {
-            if (error.name === "NotFound") {
+            if (error.name === 'NotFound') {
                 return false
             }
             throw new Error(`Failed to check if file exists: ${error.message}`)
         }
     }
 
-    async uploadFile(
-        key: string,
-        file: Buffer | Readable,
-        contentType?: ContentType | string
-    ): Promise<string> {
+    async uploadFile(key: string, file: Buffer | Readable, contentType?: ContentType | string): Promise<string> {
         try {
             await this.client.send(
                 new PutObjectCommand({
@@ -67,8 +69,7 @@ export class S3Service extends CloudStorage {
 
     async downloadFile(key: string): Promise<GetObjectCommandOutput> {
         try {
-            if (!await this.exists(key))
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) throw new Error('The specified key does not exist.')
 
             return await this.client.send(
                 new GetObjectCommand({
@@ -83,8 +84,7 @@ export class S3Service extends CloudStorage {
 
     async deleteFile(key: string): Promise<boolean> {
         try {
-            if (!await this.exists(key))
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) throw new Error('The specified key does not exist.')
 
             await this.client.send(
                 new DeleteObjectCommand({
@@ -106,10 +106,9 @@ export class S3Service extends CloudStorage {
                 key: key,
                 lastModified: data.LastModified,
                 size: data.ContentLength,
-                type: data.ContentType || isFolder(key) ? "folder" : "",
+                type: data.ContentType || isFolder(key) ? 'folder' : '',
                 url: await this.getSignedUrl(key)
             }
-
         } catch (error: any) {
             throw new Error(`Failed to get file: ${error.message}`)
         }
@@ -130,8 +129,8 @@ export class S3Service extends CloudStorage {
                     key: item.Key,
                     size: item.Size,
                     lastModified: item.LastModified,
-                    type: extractExtension(item.Key) || (isFolder(item.Key) ? "folder" : ""),
-                    url: await this.getSignedUrl(item.Key ?? "")
+                    type: extractExtension(item.Key) || (isFolder(item.Key) ? 'folder' : ''),
+                    url: await this.getSignedUrl(item.Key ?? '')
                 }))
             )
         } catch (error: any) {
@@ -141,8 +140,7 @@ export class S3Service extends CloudStorage {
 
     async getSignedUrl(key: string, expiresIn: number = 3600): Promise<string> {
         try {
-            if (!await this.exists(key))
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) throw new Error('The specified key does not exist.')
 
             const command = new GetObjectCommand({
                 Bucket: this.bucket,

@@ -28,5 +28,5 @@ export function extractExtension(filename: string | undefined): string | null {
 export function isFolder(path: string | undefined): boolean {
     if (!path) return false
 
-    return path.endsWith("/") || path.endsWith("\\")
+    return path.endsWith('/') || path.endsWith('\\')
 }

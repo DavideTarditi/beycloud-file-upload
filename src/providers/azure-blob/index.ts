@@ -1,8 +1,8 @@
-import { BlobDownloadResponseModel, BlobSASPermissions, BlobServiceClient, BlockBlobClient, ContainerClient, SASProtocol } from "@azure/storage-blob"
-import { CloudStorage } from "../../types/cloud"
-import { AzureConfig } from "../../types/config"
-import { FileMetadata } from "../../types/metadata"
-import { ContentType } from "../../types/contentType"
+import { BlobDownloadResponseModel, BlobSASPermissions, BlobServiceClient, BlockBlobClient, ContainerClient, SASProtocol } from '@azure/storage-blob'
+import { CloudStorage } from '../../types/cloud'
+import { AzureConfig } from '../../types/config'
+import { FileMetadata } from '../../types/metadata'
+import { ContentType } from '../../types/contentType'
 
 export class AzureBlobService extends CloudStorage {
     private readonly client: BlobServiceClient
@@ -11,11 +11,9 @@ export class AzureBlobService extends CloudStorage {
     constructor(config: AzureConfig) {
         super()
 
-        if (config.connectionString == null || config.connectionString.length === 0)
-            throw new Error("Connection string must be provided")
+        if (config.connectionString == null || config.connectionString.length === 0) throw new Error('Connection string must be provided')
 
-        if (config.container == null || config.container.length === 0)
-            throw new Error("Container parameter must be provided")
+        if (config.container == null || config.container.length === 0) throw new Error('Container parameter must be provided')
 
         this.client = BlobServiceClient.fromConnectionString(config.connectionString)
         this.bucket = this.client.getContainerClient(config.container)
@@ -30,11 +28,7 @@ export class AzureBlobService extends CloudStorage {
         }
     }
 
-    async uploadFile(
-        key: string,
-        file: Buffer,
-        contentType?: ContentType | string
-    ): Promise<string> {
+    async uploadFile(key: string, file: Buffer, contentType?: ContentType | string): Promise<string> {
         try {
             const blockBlobClient = this.bucket.getBlockBlobClient(key)
             await blockBlobClient.upload(file, file.length, {
@@ -51,8 +45,7 @@ export class AzureBlobService extends CloudStorage {
 
     async downloadFile(key: string): Promise<BlobDownloadResponseModel> {
         try {
-            if (!await this.exists(key))
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) throw new Error('The specified key does not exist.')
 
             const blockBlobClient = this.bucket.getBlockBlobClient(key)
             return await blockBlobClient.download(0)
@@ -63,8 +56,7 @@ export class AzureBlobService extends CloudStorage {
 
     async deleteFile(key: string): Promise<boolean> {
         try {
-            if (!await this.exists(key))
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) throw new Error('The specified key does not exist.')
 
             const blockBlobClient = this.bucket.getBlockBlobClient(key)
             await blockBlobClient.delete()
@@ -77,8 +69,7 @@ export class AzureBlobService extends CloudStorage {
 
     async getFile(key: string): Promise<FileMetadata> {
         try {
-            if (!await this.exists(key))
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) throw new Error('The specified key does not exist.')
 
             const blockBlobClient = this.bucket.getBlockBlobClient(key)
             const properties = await blockBlobClient.getProperties()
@@ -126,8 +117,7 @@ export class AzureBlobService extends CloudStorage {
 
     async getSignedUrl(key: string, expiresIn: number = 3600) {
         try {
-            if (!await this.exists(key))
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) throw new Error('The specified key does not exist.')
 
             const blockBlobClient: BlockBlobClient = this.bucket.getBlockBlobClient(key)
 
@@ -136,7 +126,7 @@ export class AzureBlobService extends CloudStorage {
             expiresOn.setSeconds(startsOn.getSeconds() + expiresIn)
 
             // Specify the permissions
-            const permissions = BlobSASPermissions.parse("r") // "r" for read access
+            const permissions = BlobSASPermissions.parse('r') // "r" for read access
             const protocol = SASProtocol.HttpsAndHttp // Optional: Restrict to HTTPS if needed
 
             return await blockBlobClient.generateSasUrl({

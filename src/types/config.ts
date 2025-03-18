@@ -6,7 +6,7 @@
  * - gcloud: Google Cloud Storage
  * - azure: Azure Blob Storage
  */
-export type ClientProvider = "local" | "aws" | "gcloud" | "azure" | "digitalocean"
+export type ClientProvider = 'local' | 'aws' | 'gcloud' | 'azure' | 'digitalocean'
 
 /**
  * AWS S3 configuration
@@ -18,11 +18,11 @@ export type ClientProvider = "local" | "aws" | "gcloud" | "azure" | "digitalocea
  * @property {string} credentials.secretAccessKey - AWS secret access key
  */
 export interface AwsConfig {
-    bucket: string;
-    region: string;
+    bucket: string
+    region: string
     credentials: {
-        accessKeyId: string;
-        secretAccessKey: string;
+        accessKeyId: string
+        secretAccessKey: string
     }
 }
 
@@ -38,8 +38,8 @@ export interface AwsConfig {
  * @property {string} credentials.secretAccessKey - DigitalOcean secret access key
  */
 export interface DigitalOceanConfig extends AwsConfig {
-    endpoint: string;
-    forcePathStyle: boolean;
+    endpoint: string
+    forcePathStyle: boolean
 }
 
 /**
@@ -49,8 +49,8 @@ export interface DigitalOceanConfig extends AwsConfig {
  * @property {string} container - Name of the Azure storage container
  */
 export interface AzureConfig {
-    connectionString: string;
-    container: string;
+    connectionString: string
+    container: string
 }
 
 /**
@@ -61,11 +61,10 @@ export interface AzureConfig {
  * @property {string} keyFilePath - Path to the service account key file
  */
 export interface GCSConfig {
-    bucket: string;
-    projectId: string;
-    keyFilePath: string;
+    bucket: string
+    projectId: string
+    keyFilePath: string
 }
-
 
 /**
  * Local Storage configuration
@@ -73,5 +72,5 @@ export interface GCSConfig {
  * @property {string} bucket - The name of the GCS bucket
  */
 export interface LocalConfig {
-    basePath: string;
+    basePath: string
 }

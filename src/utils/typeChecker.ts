@@ -1,4 +1,4 @@
-import { AwsConfig, AzureConfig, DigitalOceanConfig, GCSConfig, LocalConfig } from "../types/config"
+import { AwsConfig, AzureConfig, DigitalOceanConfig, GCSConfig, LocalConfig } from '../types/config'
 
 /**
  * Type guard to verify if a configuration object is an AWS configuration
@@ -11,13 +11,13 @@ import { AwsConfig, AzureConfig, DigitalOceanConfig, GCSConfig, LocalConfig } fr
  * - region
  */
 export function isAwsConfig(config: AwsConfig | AzureConfig | GCSConfig | DigitalOceanConfig | LocalConfig): config is AwsConfig {
-  return (
-    "credentials" in config &&
-    "bucket" in config &&
-    "region" in config &&
-    "accessKeyId" in (config as AwsConfig).credentials &&
-    "secretAccessKey" in (config as AwsConfig).credentials
-  )
+    return (
+        'credentials' in config &&
+        'bucket' in config &&
+        'region' in config &&
+        'accessKeyId' in (config as AwsConfig).credentials &&
+        'secretAccessKey' in (config as AwsConfig).credentials
+    )
 }
 
 /**
@@ -32,15 +32,15 @@ export function isAwsConfig(config: AwsConfig | AzureConfig | GCSConfig | Digita
  * - region
  */
 export function isDigitalOceanConfig(config: AwsConfig | AzureConfig | GCSConfig | DigitalOceanConfig | LocalConfig): config is DigitalOceanConfig {
-  return (
-    "credentials" in config &&
-    "bucket" in config &&
-    "region" in config &&
-    "endpoint" in config &&
-    "forcePathStyle" in config &&
-    "accessKeyId" in (config as AwsConfig).credentials &&
-    "secretAccessKey" in (config as AwsConfig).credentials
-  )
+    return (
+        'credentials' in config &&
+        'bucket' in config &&
+        'region' in config &&
+        'endpoint' in config &&
+        'forcePathStyle' in config &&
+        'accessKeyId' in (config as AwsConfig).credentials &&
+        'secretAccessKey' in (config as AwsConfig).credentials
+    )
 }
 
 /**
@@ -53,10 +53,7 @@ export function isDigitalOceanConfig(config: AwsConfig | AzureConfig | GCSConfig
  * - container name
  */
 export function isAzureConfig(config: AwsConfig | AzureConfig | GCSConfig | DigitalOceanConfig | LocalConfig): config is AzureConfig {
-  return (
-    "connectionString" in config &&
-    "container" in config
-  )
+    return 'connectionString' in config && 'container' in config
 }
 
 /**
@@ -70,13 +67,8 @@ export function isAzureConfig(config: AwsConfig | AzureConfig | GCSConfig | Digi
  * - keyFilePath for service account credentials
  */
 export function isGCSConfig(config: AwsConfig | AzureConfig | GCSConfig | DigitalOceanConfig | LocalConfig): config is GCSConfig {
-  return (
-    "bucket" in config &&
-    "projectId" in config &&
-    "keyFilePath" in config
-  )
+    return 'bucket' in config && 'projectId' in config && 'keyFilePath' in config
 }
-
 
 /**
  * Type guard to verify if a configuration object is a Local Storage configuration
@@ -87,7 +79,5 @@ export function isGCSConfig(config: AwsConfig | AzureConfig | GCSConfig | Digita
  * - path
  */
 export function isLocalConfig(config: AwsConfig | AzureConfig | GCSConfig | DigitalOceanConfig | LocalConfig): config is LocalConfig {
-  return (
-    "basePath" in config
-  )
+    return 'basePath' in config
 }

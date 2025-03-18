@@ -1,9 +1,9 @@
-import { Bucket, File, Storage } from "@google-cloud/storage"
-import { Readable } from "stream"
-import { CloudStorage } from "../../types/cloud"
-import { GCSConfig } from "../../types/config"
-import { FileMetadata } from "../../types/metadata"
-import { ContentType } from "../../types/contentType"
+import { Bucket, File, Storage } from '@google-cloud/storage'
+import { Readable } from 'stream'
+import { CloudStorage } from '../../types/cloud'
+import { GCSConfig } from '../../types/config'
+import { FileMetadata } from '../../types/metadata'
+import { ContentType } from '../../types/contentType'
 
 export class GCSService extends CloudStorage {
     private readonly client: Storage
@@ -12,16 +12,16 @@ export class GCSService extends CloudStorage {
     constructor(config: GCSConfig) {
         super()
 
-        if (config.bucket == null || config.bucket.trim().length == 0)
-            throw new Error("Bucket must be provided")
+        if (config.bucket == null || config.bucket.trim().length == 0) throw new Error('Bucket must be provided')
 
-        if (config.projectId == null || config.projectId.trim().length == 0)
-            throw new Error("Project must be provided")
+        if (config.projectId == null || config.projectId.trim().length == 0) throw new Error('Project must be provided')
 
-        if (config.keyFilePath == null || config.keyFilePath.trim().length == 0)
-            throw new Error("Key File Path must be provided")
+        if (config.keyFilePath == null || config.keyFilePath.trim().length == 0) throw new Error('Key File Path must be provided')
 
-        this.client = new Storage({ projectId: config.projectId, keyFilename: config.keyFilePath })
+        this.client = new Storage({
+            projectId: config.projectId,
+            keyFilename: config.keyFilePath
+        })
         this.bucket = this.client.bucket(config.bucket)
     }
 
@@ -35,11 +35,7 @@ export class GCSService extends CloudStorage {
         }
     }
 
-    async uploadFile(
-        key: string,
-        file: Buffer | Readable,
-        contentType?: ContentType | string
-    ): Promise<string> {
+    async uploadFile(key: string, file: Buffer | Readable, contentType?: ContentType | string): Promise<string> {
         try {
             const fileHandle = this.bucket.file(key)
             const options: { contentType?: string } = {}
@@ -52,8 +48,8 @@ export class GCSService extends CloudStorage {
                 } else {
                     file.pipe(stream)
                 }
-                stream.on("finish", resolve)
-                stream.on("error", reject)
+                stream.on('finish', resolve)
+                stream.on('error', reject)
             })
 
             return this.getSignedUrl(key)
@@ -74,8 +70,7 @@ export class GCSService extends CloudStorage {
 
     async deleteFile(key: string): Promise<boolean> {
         try {
-            if (!await this.exists(key))
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) throw new Error('The specified key does not exist.')
 
             const fileHandle = this.bucket.file(key)
             await fileHandle.delete()
@@ -111,7 +106,7 @@ export class GCSService extends CloudStorage {
             })
 
             return await Promise.all(
-                files.map(async (item) => ({
+                files.map(async item => ({
                     key: item.name,
                     size: item.metadata.size,
                     lastModified: item.metadata.updated,
@@ -126,13 +121,12 @@ export class GCSService extends CloudStorage {
 
     async getSignedUrl(key: string, expiresIn: number = 3600) {
         try {
-            if (!await this.exists(key))
-                throw new Error("The specified key does not exist.")
+            if (!(await this.exists(key))) throw new Error('The specified key does not exist.')
 
             const fileHandle = this.bucket.file(key)
 
             const [url] = await fileHandle.getSignedUrl({
-                action: "read",
+                action: 'read',
                 expires: Date.now() + expiresIn * 1000
             })
 
