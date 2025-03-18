@@ -158,6 +158,6 @@ export class LocalService extends CloudStorage {
         }
 
         // For local storage, we just return the file URL
-        return `file://${this.getFullPath(key)}`
+        return this.getFullPath(key)
     }
 }
