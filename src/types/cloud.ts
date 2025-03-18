@@ -1,8 +1,8 @@
-import { Readable } from "stream"
-import { BlobDownloadResponseModel } from "@azure/storage-blob"
-import { GetObjectCommandOutput } from "@aws-sdk/client-s3"
-import { FileMetadata } from "./metadata"
-import { ContentType } from "./contentType"
+import { Readable } from 'stream'
+import { BlobDownloadResponseModel } from '@azure/storage-blob'
+import { GetObjectCommandOutput } from '@aws-sdk/client-s3'
+import { FileMetadata } from './metadata'
+import { ContentType } from './contentType'
 
 /**
  * Abstract base class for cloud storage operations
@@ -19,7 +19,7 @@ export abstract class CloudStorage {
      * @returns Promise<boolean> - True if file exists, false otherwise
      * @throws Error if the operation fails for reasons other than file not found
      */
-    abstract exists(key: string): Promise<boolean>;
+    abstract exists(key: string): Promise<boolean>
 
     /**
      * Uploads a file to cloud storage
@@ -31,7 +31,7 @@ export abstract class CloudStorage {
      * @returns {string} Signed URL to read the file
      * @throws {Error} If upload fails or storage is unavailable
      */
-    abstract uploadFile(key: string, file: Buffer | Readable, contentType?: ContentType | string): Promise<string> | string;
+    abstract uploadFile(key: string, file: Buffer | Readable, contentType?: ContentType | string): Promise<string> | string
 
     /**
      * Downloads a file from cloud storage
@@ -44,7 +44,7 @@ export abstract class CloudStorage {
      * - GetObjectCommandOutput for AWS S3
      * @throws {Error} If file not found or download fails
      */
-    abstract downloadFile(key: string): Promise<Buffer | BlobDownloadResponseModel | GetObjectCommandOutput>;
+    abstract downloadFile(key: string): Promise<Buffer | BlobDownloadResponseModel | GetObjectCommandOutput>
 
     /**
      * Deletes a file from cloud storage
@@ -53,7 +53,7 @@ export abstract class CloudStorage {
      * @returns {boolean} - True if successfully deleted, false otherwise (in case of no error)
      * @throws {Error} If file not found or deletion fails
      */
-    abstract deleteFile(key: string): Promise<boolean>;
+    abstract deleteFile(key: string): Promise<boolean>
 
     /**
      * Retrieves metadata for a specific file
@@ -62,7 +62,7 @@ export abstract class CloudStorage {
      * @returns {Promise<FileMetadata>} File metadata including size, last modified date, and URL
      * @throws {Error} If file not found or metadata retrieval fails
      */
-    abstract getFile(key: string): Promise<FileMetadata>;
+    abstract getFile(key: string): Promise<FileMetadata>
 
     /**
      * Lists files in the storage with optional prefix filtering
@@ -72,7 +72,7 @@ export abstract class CloudStorage {
      * @returns {Promise<FileMetadata[]>} Array of file metadata objects
      * @throws {Error} If listing operation fails
      */
-    abstract getFilesList(maxKeys?: number, prefix?: string): Promise<FileMetadata[]>;
+    abstract getFilesList(maxKeys?: number, prefix?: string): Promise<FileMetadata[]>
 
     /**
      * Generates a signed URL for temporary file access
@@ -84,5 +84,5 @@ export abstract class CloudStorage {
      * - string for sync operations (e.g., local storage)
      * @throws {Error} If URL generation fails or file not found
      */
-    abstract getSignedUrl(key: string, expiresIn: number): Promise<string> | string;
+    abstract getSignedUrl(key: string, expiresIn: number): Promise<string> | string
 }
