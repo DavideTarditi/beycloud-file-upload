@@ -64,10 +64,10 @@ export function isAzureConfig(config: AwsConfig | AzureConfig | GCSConfig | Digi
  * Checks for required GCS-specific properties:
  * - bucket name
  * - projectId for project identification
- * - keyFilePath for service account credentials
+ * - credentials for service account credentials
  */
 export function isGCSConfig(config: AwsConfig | AzureConfig | GCSConfig | DigitalOceanConfig | LocalConfig): config is GCSConfig {
-    return 'bucket' in config && 'projectId' in config && 'keyFilePath' in config
+    return 'bucket' in config && 'projectId' in config && 'credentials' in config
 }
 
 /**

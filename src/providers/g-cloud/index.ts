@@ -1,4 +1,4 @@
-import { Bucket, File, Storage } from '@google-cloud/storage'
+import { Bucket, File, Storage, StorageOptions } from '@google-cloud/storage'
 import { Readable } from 'stream'
 import { CloudStorage } from '../../types/cloud'
 import { GCSConfig } from '../../types/config'
@@ -16,11 +16,13 @@ export class GCSService extends CloudStorage {
 
         if (config.projectId == null || config.projectId.trim().length == 0) throw new Error('Project must be provided')
 
-        if (config.keyFilePath == null || config.keyFilePath.trim().length == 0) throw new Error('Key File Path must be provided')
+        if (config.credentials == null || config.credentials.trim().length == 0) throw new Error('Key File Path must be provided')
+
+        const credentials = JSON.parse(Buffer.from(config.credentials, 'base64').toString('utf-8'))
 
         this.client = new Storage({
             projectId: config.projectId,
-            keyFilename: config.keyFilePath
+            credentials: credentials
         })
         this.bucket = this.client.bucket(config.bucket)
     }
@@ -46,7 +48,11 @@ export class GCSService extends CloudStorage {
                 if (file instanceof Buffer) {
                     stream.end(file)
                 } else {
-                    file.pipe(stream)
+                    if (file instanceof Readable) {
+                        file.pipe(stream)
+                    } else {
+                        throw new Error('File must be a Buffer or Readable stream')
+                    }
                 }
                 stream.on('finish', resolve)
                 stream.on('error', reject)

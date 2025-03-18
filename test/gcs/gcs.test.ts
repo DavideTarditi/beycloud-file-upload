@@ -12,7 +12,7 @@ describe('GCS', () => {
         config = {
             bucket: process.env.GCS_BUCKET as string,
             projectId: process.env.GCS_PROJECTID as string,
-            keyFilePath: path.join(rootTestFolder, 'key/account.json')
+            credentials: process.env.GCS_CREDENTIALS as string
         }
 
         try {
@@ -27,7 +27,7 @@ describe('GCS', () => {
             const incorrectConfig: GCSConfig = {
                 bucket: '',
                 projectId: process.env.GCS_PROJECTID as string,
-                keyFilePath: path.join(rootTestFolder, 'key/account.json')
+                credentials: JSON.parse(Buffer.from((process.env.GCS_CREDENTIALS as string) || '', 'base64').toString('utf-8'))
             }
 
             expect(() => {

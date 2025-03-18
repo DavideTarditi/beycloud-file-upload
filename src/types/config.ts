@@ -58,12 +58,12 @@ export interface AzureConfig {
  * @interface GCSConfig
  * @property {string} bucket - The name of the GCS bucket
  * @property {string} projectId - Google Cloud project ID
- * @property {string} keyFilePath - Path to the service account key file
+ * @property {string} credentials - Credentials service account key file in Base64
  */
 export interface GCSConfig {
     bucket: string
     projectId: string
-    keyFilePath: string
+    credentials: string
 }
 
 /**
