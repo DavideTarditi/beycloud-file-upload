@@ -58,7 +58,7 @@ export class LocalService extends CloudStorage {
                 await writeFile(`${fullPath}.meta`, JSON.stringify({ contentType }))
             }
 
-            return `file://${fullPath}`
+            return this.getSignedUrl(fullPath)
         } catch (error: any) {
             throw new Error(`Failed to upload file: ${error.message}`)
         }
