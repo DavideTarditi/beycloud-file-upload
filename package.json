@@ -36,7 +36,7 @@
         "@azure/storage-blob": "^12.26.0",
         "@google-cloud/storage": "^6.0.0",
         "aws-sdk": "^2.1200.0",
-        "multer": "^1.4.5-lts.1"
+        "multer": ">=2.0.0"
     },
     "devDependencies": {
         "@types/express": "^4.17.13",
