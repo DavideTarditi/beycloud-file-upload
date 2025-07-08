@@ -126,14 +126,14 @@ export class AzureBlobService extends CloudStorage {
             expiresOn.setSeconds(startsOn.getSeconds() + expiresIn)
 
             // Specify the permissions
-            const permissions = BlobSASPermissions.parse('r') // "r" for read access
-            const protocol = SASProtocol.HttpsAndHttp // Optional: Restrict to HTTPS if needed
+            const permissions = BlobSASPermissions.parse('r')
+            const protocol = SASProtocol.HttpsAndHttp
 
             return await blockBlobClient.generateSasUrl({
                 permissions,
                 startsOn,
                 expiresOn,
-                protocol // Optional
+                protocol
             })
         } catch (error: any) {
             throw new Error(`Failed to generate signed URL: ${error.message}`)
