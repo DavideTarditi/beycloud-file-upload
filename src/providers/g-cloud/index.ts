@@ -94,8 +94,8 @@ export class GCSService extends CloudStorage {
 
             return {
                 key: key,
-                size: Number(metadata.size),
-                lastModified: new Date(metadata.updated),
+                size: metadata.size != null ? Number(metadata.size) : undefined,
+                lastModified: metadata.updated ? new Date(metadata.updated) : undefined,
                 type: metadata.kind,
                 url: await this.getSignedUrl(key)
             }
@@ -114,8 +114,8 @@ export class GCSService extends CloudStorage {
             return await Promise.all(
                 files.map(async item => ({
                     key: item.name,
-                    size: item.metadata.size,
-                    lastModified: item.metadata.updated,
+                    size: item.metadata.size != null ? Number(item.metadata.size) : undefined,
+                    lastModified: item.metadata.updated ? new Date(item.metadata.updated) : undefined,
                     type: item.metadata.kind,
                     url: await this.getSignedUrl(item.name)
                 }))

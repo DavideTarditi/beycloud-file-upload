@@ -1,6 +1,6 @@
 {
     "name": "beycloud",
-    "version": "1.1.7",
+    "version": "1.2.0",
     "author": "Davide Tarditi",
     "description": "A library to handle file uploads to different cloud providers",
     "main": "dist/index.js",
@@ -34,7 +34,7 @@
         "@aws-sdk/client-s3": "^3.726.1",
         "@aws-sdk/s3-request-presigner": "^3.726.1",
         "@azure/storage-blob": "^12.26.0",
-        "@google-cloud/storage": "^6.0.0",
+        "@google-cloud/storage": "^7.0.0",
         "multer": ">=2.0.0"
     },
     "devDependencies": {
